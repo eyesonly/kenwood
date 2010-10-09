@@ -4,7 +4,7 @@
 # $2 is the recipients public key, eg. 'myfriend@his.isp.net'
 set -e
 
-CHUNK_SIZE=1000000 #1000000000==1GB (not 1GiB!)
+CHUNK_SIZE=1000000000 #1000000000==1GB (not 1GiB!)
 SCRATCH_DIR=~/scratch_space
 TAR_REGEX='\.tar'
 
@@ -12,7 +12,7 @@ usage() {
     echo "ERROR: "
     echo " $*"
     echo "USAGE: "
-    echo " mince.sh DIRECTORY/ARCHIVE PUBLIC_KEY_NAME"
+    echo " mince.sh [DIRECTORY|ARCHIVE] PUBLIC_KEY_NAME"
     echo "EXAMPLE: "
     echo " ./mince.sh directory myfriend@her.isp.net"
     echo "FURTHER COMMENTS: "
