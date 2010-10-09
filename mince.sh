@@ -4,7 +4,7 @@
 # $2 is the recipients public key, eg. 'myfriend@his.isp.net'
 set -e
 
-CHUNK_SIZE=1000000000 #==1GB (not 1GiB!)
+CHUNK_SIZE=1000000 #1000000000==1GB (not 1GiB!)
 SCRATCH_DIR=~/scratch_space
 TAR_REGEX='\.tar'
 
@@ -14,7 +14,7 @@ usage() {
     echo "USAGE: "
     echo " mince.sh DIRECTORY/ARCHIVE PUBLIC_KEY_NAME"
     echo "EXAMPLE: "
-    echo " ./mince.sh directory 'myfriend@her.isp.net'"
+    echo " ./mince.sh directory myfriend@her.isp.net"
     echo "FURTHER COMMENTS: "
     echo " if an ARCHIVE is supplied instead of a directory, it must have a name like file.tar or file.tar.gz or file.tar.bz2 "
 }
@@ -43,17 +43,21 @@ fi
 
 #call for GPG encryption and compression of the archive
 target="${arch##*/}.gpg"
+name=${target%\.gpg}
+mkdir -p $SCRATCH_DIR
 cd $SCRATCH_DIR
+echo "Commencing GPG encryption, please be patient"
 gpg --bzip2-compress-level 6 --compress-algo bzip2 --output $target --encrypt --recipient $2 $arch
 
 #split .gpg file into chunks of size CHUNK_SIZE
 outdir="${SCRATCH_DIR}/output"
-mkdir -p outdir
-cd outdir
+mkdir -p $outdir
+cd $outdir && rm -f $name*
+echo "Splitting files"
 split -b $CHUNK_SIZE ../$target
 for x in *
 do
-    mv $x "${1}__$x"
+    mv $x "${name}__$x"
 done
 
 #clean up - remove .gpg and temporary archive
