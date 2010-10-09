@@ -4,7 +4,7 @@
 # $2 is the recipients public key, eg. 'myfriend@his.isp.net'
 set -e
 
-CHUNK_SIZE=1000000
+CHUNK_SIZE=1000000000 #==1GB (not 1GiB!)
 SCRATCH_DIR=~/scratch_space
 TAR_REGEX='\.tar'
 
@@ -38,7 +38,7 @@ if [ -d "$1" ]; then
 else
     arch="`readlink -f $1`"
     created=false
-    echo "Working with archive $arch"
+    echo "Working with existing archive $arch"
 fi
 
 #call for GPG encryption and compression of the archive
