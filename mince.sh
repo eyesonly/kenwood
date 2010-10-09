@@ -1,30 +1,35 @@
 #!/bin/bash
-# mince.sh
-# gpg encrypt archive and split into chunk
+# gpg encrypt archive and split into chunks
 # $1 specifies base directory or compressed archive to encrypt.
-
+# $2 is the recipients public key, eg. 'myfriend@his.isp.net'
 set -e
 
 CHUNK_SIZE=1000000
 SCRATCH_DIR=~/scratch_space
-TARGZ_REGEX='*.tar.gz'
-TARBZ_REGEX='*.tar.bz2'
+TAR_REGEX='*tar*'
 
 usage() {
-echo "ERROR: $*"
-echo "usage: "
-echo " mince.sh DIRECTORY   or    "
-echo " mince.sh FILE.tar[.gz|bz2] "
+echo "ERROR: "
+echo " $*"
+echo "USAGE: "
+echo " mince.sh DIRECTORY/ARCHIVE PUBLIC_KEY_NAME"
+echo "EXAMPLE: "
+echo " ./mince.sh directory 'myfriend@her.isp.net'"
+echo "FURTHER COMMENTS: "
+echo " if an ARCHIVE is supplied instead of a directory, it must have a name like file.tar or file.tar.gz or file.tar.bz2 "
 }
 
 # find_files() {
 # find . -type f ! -name "*.pgp" ! -name .DS_Store ! -name "*.gpg" ! -name "*.sda.exe"
 # }
 
+[[ $1 =~ $TAR_REGEX ]] && echo "matches!"
+[[ ! $1 =~ $TAR_REGEX ]] && echo "does not match"
+
 #check parameters entered are valid
 [ $# -ne 1 ] && usage "Missing required directory or archive argument." && exit 1
- if [ ! -d "$1" ] && [[ ! $1 =~ $TARGZ_REGEX ]] && [[ ! $1 =~ $TARBZ_REGEX ]]; then
-  usage "$1 is not a directory or tar.gz/bz2 archive."
+ if [ ! -d "$1" ] && [[ ! $1 =~ $TAR_REGEX ]]; then
+  usage "$1 is not a directory or tar/tar.gz/tar.bz2 archive."
   exit 1
  fi
 
@@ -44,6 +49,8 @@ else
 fi
 
 #call for GPG encryption and compression of the archive
+target="${SCRATCH_DIR}/${1}.gpg"
+gpg --encrypt --recipient 'myfriend@his.isp.net' foo.txt
 
 
 echo "State of created flag: $created"
