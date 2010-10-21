@@ -53,17 +53,19 @@ gpg --bzip2-compress-level 6 --compress-algo bzip2 --output $target --encrypt --
 
 #split .gpg file into chunks of size CHUNK_SIZE
 outdir="${SCRATCH_DIR}/output"
-mkdir -p $outdir
-cd $outdir && rm -f $name*
+mkdir -p "$outdir"
+mkdir -p "$outdir/$name"
+cd $outdir/$name && rm -f $name*
 echo "Splitting files"
-split -b $CHUNK_SIZE ../$target
+split -b $CHUNK_SIZE "${SCRATCH_DIR}/$target"
 for x in *
 do
-    mv $x "${name}__$x"
+  mv $x "../${name}__$x"
 done
 
-#clean up - remove .gpg and temporary archive
+#clean up - remove .gpg and temporary archive and temporary directory
 cd $SCRATCH_DIR
+rmdir "$outdir/$name"
 rm $target
 if [ $created == true ]; then
     echo "Removing temporary archive $arch"
