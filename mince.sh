@@ -31,7 +31,8 @@ if [ -d "$1" ]; then
     absolute="`cd $1; pwd` "
     mkdir -p $SCRATCH_DIR
     cd $SCRATCH_DIR
-    nameonly=${1##*/}
+    nameonly=${absolute##*/}
+    nameonly=${nameonly/ /} #remove trailing spaces
     tar -cf $nameonly.tar $absolute
     arch="${SCRATCH_DIR}/${nameonly}.tar"
     created=true
