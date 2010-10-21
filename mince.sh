@@ -31,8 +31,9 @@ if [ -d "$1" ]; then
     absolute="`cd $1; pwd` "
     mkdir -p $SCRATCH_DIR
     cd $SCRATCH_DIR
-    tar -cf $1.tar $absolute
-    arch="${SCRATCH_DIR}/${1}.tar"
+    nameonly=${1##*/}
+    tar -cf $nameonly.tar $absolute
+    arch="${SCRATCH_DIR}/${nameonly}.tar"
     created=true
     echo "Created temporary archive $arch"
 else
